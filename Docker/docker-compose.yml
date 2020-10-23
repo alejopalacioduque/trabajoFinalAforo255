@@ -1,0 +1,86 @@
+version: '3'
+
+services:
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    restart: always
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:29092"
+      JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
+    depends_on:
+      - "kafka"
+    networks:
+      - aforo255-test
+      
+  kafka:
+    image: obsidiandynamics/kafka
+    restart: always
+    ports:
+      - "2181:2181"
+      - "9092:9092"
+    environment:
+      KAFKA_LISTENERS: "INTERNAL://:29092,EXTERNAL://:9092"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka:29092,EXTERNAL://localhost:9092"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+      KAFKA_ZOOKEEPER_SESSION_TIMEOUT: "6000"
+      KAFKA_RESTART_ATTEMPTS: "10"
+      KAFKA_RESTART_DELAY: "5"
+      ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL: "0"
+    networks:
+      - aforo255-test
+
+  microservicio-mysql8:
+    image: mysql:8
+    restart: always
+    container_name: microservicio-mysql8
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=db_operation
+    ports:
+      - 3307:3306
+    networks:
+      - aforo255-test
+
+  microservicio-postgres12:
+    image: postgres:12-alpine
+    restart: always
+    container_name: microservicio-postgres12
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=db_invoice
+    ports:
+      - "5432:5432"
+    networks:
+      - aforo255-test
+
+  sqlservice:
+    image: mcr.microsoft.com/mssql/server:2019-CU3-ubuntu-18.04
+    restart: always
+    container_name: sqlservice
+    environment:
+      - "ACCEPT_EULA=Y"
+      - "SA_PASSWORD=1a.2b.3c."
+    ports:
+      - "1433:1433"
+    networks:
+      - aforo255-test
+
+  mongodb:
+    image: mongo
+    restart: always
+    container_name: mongodb
+    ports:
+      - "27018:27017"
+    networks:
+      - aforo255-test
+      
+networks:
+  aforo255-test:
+    driver: bridge
+
+    
+      
