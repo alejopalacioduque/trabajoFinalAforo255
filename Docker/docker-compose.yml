@@ -38,7 +38,7 @@ services:
     restart: always
     container_name: microservicio-mysql8
     environment:
-      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=123456
       - MYSQL_DATABASE=db_operation
     ports:
       - 3307:3306
@@ -57,17 +57,17 @@ services:
     networks:
       - aforo255-test
 
-  sqlservice:
-    image: mcr.microsoft.com/mssql/server:2019-CU3-ubuntu-18.04
-    restart: always
-    container_name: sqlservice
-    environment:
-      - "ACCEPT_EULA=Y"
-      - "SA_PASSWORD=1a.2b.3c."
-    ports:
-      - "1433:1433"
-    networks:
-      - aforo255-test
+#   sqlservice:
+#     image: mcr.microsoft.com/mssql/server:2019-CU3-ubuntu-18.04
+#     restart: always
+#     container_name: sqlservice
+#     environment:
+#       - "ACCEPT_EULA=Y"
+#       - "SA_PASSWORD=1a.2b.3c."
+#     ports:
+#       - "1433:1433"
+#     networks:
+#       - aforo255-test
 
   mongodb:
     image: mongo
